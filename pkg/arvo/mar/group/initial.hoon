@@ -1,14 +1,13 @@
-/+  *group-json
-|_  grp=groups
+/+  *group-store
+|_  init=initial
 ::
-++  grow
-  |%
-  ++  json  (groups-to-json grp)
-  --
+::  ++  grow
+::    |%
+::    --
 ::
 ++  grab
   |%
-  ++  noun  groups
+  ++  noun  initial
   --
 ::
 --
