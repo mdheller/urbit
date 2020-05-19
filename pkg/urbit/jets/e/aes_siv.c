@@ -33,6 +33,10 @@ static u3_noun _siv_en(c3_y* key_y,
                        u3_atom txt)
 {
   AES_SIV_CTX* ctx = AES_SIV_CTX_new();
+  if ( 0 == ctx ) {
+    return u3m_bail(c3__fail);
+  }
+
   if ( 0 == AES_SIV_Init(ctx, key_y, keysize) ) {
     AES_SIV_CTX_free(ctx);
     return u3m_bail(c3__exit);
@@ -97,6 +101,10 @@ static u3_noun _siv_de(c3_y* key_y,
                        u3_atom txt)
 {
   AES_SIV_CTX* ctx = AES_SIV_CTX_new();
+  if ( 0 == ctx ) {
+    return u3m_bail(c3__fail);
+  }
+
   if ( 0 == AES_SIV_Init(ctx, key_y, keysize) ) {
     AES_SIV_CTX_free(ctx);
     return u3m_bail(c3__exit);
