@@ -1,4 +1,4 @@
-/-  *rw-security
+/-  *group
 |%
 +$  chat-view-action
   $%  ::  %create: create a new chat
@@ -13,7 +13,7 @@
           description=@t
           app-path=path
           group-path=path
-          security=rw-security
+          =policy
           members=(set ship)
           allow-history=?
       ==

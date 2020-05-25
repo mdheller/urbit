@@ -1,5 +1,5 @@
 /-  *chat-store, *chat-hook, *chat-view
-/+  chat-eval
+/+  chat-eval, group-store
 |%
 ::
 ++  slan  |=(mod/@tas |=(txt/@ta (need (slaw mod txt))))
@@ -274,7 +274,7 @@
         [%description so]
         [%app-path pa]
         [%group-path pa]
-        [%security sec]
+        [%policy policy:dejs:group-store]
         [%members (as (su ;~(pfix sig fed:ag)))]
         [%allow-history bo]
     ==

@@ -10,10 +10,10 @@
 ::    and trust it to take care of the rest.
 ::
 /-  *chat-store, *chat-view, *chat-hook,
-    *permission-store, *group-store, *invite-store,
+    *permission-store, *group, *invite-store,
     sole-sur=sole
 /+  sole-lib=sole, chat-eval, default-agent, verb, dbug,
-    auto=language-server-complete
+    auto=language-server-complete, group-store
 ::
 |%
 +$  card  card:agent:gall
@@ -846,10 +846,10 @@
       =/  with-group=?     ?=(%village-with-group security)
       =/  =target          [with-group our-self path]
       =/  real-path=^path  (target-to-path target)
-      =/  =rw-security
+      =/  =policy
         ?-  security
-          %channel                         %channel
-          ?(%village %village-with-group)  %village
+          %channel                         *open:policy
+          ?(%village %village-with-group)  *invite:policy
         ==
       ?^  (scry-for (unit mailbox) %chat-store [%mailbox real-path])
         =-  [[- ~] state]
@@ -868,7 +868,7 @@
           ''
           real-path  ::  chat
           real-path  ::  group
-          rw-security
+          policy
           ~
           (fall allow-history %.y)
       ==
@@ -901,29 +901,33 @@
         ::  but if they already were, we want to send an invite ourselves.
         ::
         ?.  %^  scry-for  ?
-              %permission-store
-            [%permitted (scot %p ship) real-path]
+              %group-store
+            %+  welp
+              real-path
+            /permitted/[(scot %p ship)]
           ~
         `(invite-card real-path ship)
       ::  whitelist: empty if no matching permission, else true if whitelist
       ::
       =/  whitelist=(unit ?)
-        =;  perm=(unit permission)
-          ?~(perm ~ `?=(%white kind.u.perm))
+        =;  grp=(unit ^group)
+          ?~(grp ~ `?=(%open -.u.grp))
         ::TODO  +permission-of-target?
-        %^  scry-for  (unit permission)
-          %permission-store
-        [%permission real-path]
+        %^  scry-for  (unit ^group)
+          %group-store
+        `^path`[%groups real-path]
       ?~  whitelist
         ~&  [%weird-no-permission real-path]
         ~
+      =/  =group-id
+        (need (group-id:de-path:group-store real-path))
       %-  some
       %^  act  %do-permission  %group-store
       :-  %group-action
-      !>  ^-  group-action
+      !>   ^-  action:group-store
       ?:  =(u.whitelist allow)
-        [%add ships real-path]
-      [%remove ships real-path]
+        [%add-members group-id ships ~]
+      [%remove-members group-id ships]
     ::  +join: sync with remote mailbox
     ::
     ++  join
