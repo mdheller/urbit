@@ -709,6 +709,8 @@ u3a_malloc_ssl(size_t len_i
 #endif
                )
 {
+  u3l_log("openssl trying to allocate %zu\r\n", len_i);
+
   return u3a_malloc(len_i);
 }
 
@@ -904,6 +906,8 @@ u3a_realloc_ssl(void* lag_v, size_t len_i
 #endif
                 )
 {
+  u3l_log("openssl trying to reallocate %zu\r\n", len_i);
+
   return u3a_realloc(lag_v, len_i);
 }
 
@@ -940,6 +944,7 @@ u3a_free_ssl(void* tox_v
 #endif
              )
 {
+  u3l_log("openssl trying to free\r\n");
 
   return u3a_free(tox_v);
 }
