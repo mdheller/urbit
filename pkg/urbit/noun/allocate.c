@@ -700,6 +700,8 @@ u3a_malloc(size_t len_i)
   return out_w;
 }
 
+static int ssl_mallocs = 0;
+
 /* u3a_malloc_ssl(): openssl-shaped malloc
 */
 void*
@@ -709,7 +711,12 @@ u3a_malloc_ssl(size_t len_i
 #endif
                )
 {
-  u3l_log("openssl trying to allocate %zu\r\n", len_i);
+  ssl_mallocs++;
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+  u3l_log("[%s:%d] openssl trying to allocate %zu (outstanding allocs: %d)\r\n", file, line, len_i, ssl_mallocs);
+#else
+  u3l_log("openssl trying to allocate %zu (outstanding allocs: %d)\r\n", len_i, ssl_mallocs);
+#endif
 
   return u3a_malloc(len_i);
 }
@@ -906,7 +913,7 @@ u3a_realloc_ssl(void* lag_v, size_t len_i
 #endif
                 )
 {
-  u3l_log("openssl trying to reallocate %zu\r\n", len_i);
+  u3l_log("openssl trying to reallocate %zu (outstanding allocs: %d)\r\n", len_i, ssl_mallocs);
 
   return u3a_realloc(lag_v, len_i);
 }
@@ -944,7 +951,8 @@ u3a_free_ssl(void* tox_v
 #endif
              )
 {
-  u3l_log("openssl trying to free\r\n");
+  ssl_mallocs--;
+  u3l_log("openssl trying to free (outstanding allocs: %d)\r\n", ssl_mallocs);
 
   return u3a_free(tox_v);
 }
